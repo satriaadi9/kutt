@@ -93,7 +93,7 @@ const apikey = authenticate("localapikey", "API key is not correct.", false, nul
 const oidc = authenticate("oidc", "Unauthorized", true, "page");
 
 function admin(req, res, next) {
-  if (req.user.admin) return next();
+  if (utils.isAdmin(req.user)) return next();
   throw new CustomError("Unauthorized", 401);
 }
 
