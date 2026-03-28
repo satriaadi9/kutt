@@ -24,6 +24,10 @@ function error(error, req, res, _next) {
   }
 
   if (req.isHTML) {
+    if (req.headers["hx-request"]) {
+       res.setHeader("HX-Retarget", "body");
+       res.setHeader("HX-Reswap", "innerHTML");
+    }
     res.render("error", {
       message: "An error occurred. Please try again later."
     });

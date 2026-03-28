@@ -31,9 +31,7 @@ async function login(req, res) {
 
 function logout(req, res) {
   utils.deleteCurrentToken(res);
-  res.render("logout", {
-    title: "Logging out.."
-  });
+  res.redirect("/login");
 }
 
 async function createAdmin(req, res) {
@@ -116,12 +114,14 @@ async function resetPasswordSetNewPassword(req, res) {
 }
 
 async function verifyChangeEmail(req, res) {
+  if (res.locals.token_verified) return res.redirect("/");
   res.render("verify_change_email", {
     title: "Verifying email",
   });
 }
 
 async function verify(req, res) {
+  if (res.locals.token_verified) return res.redirect("/");
   res.render("verify", {
     title: "Verify",
   });

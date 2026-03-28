@@ -95,6 +95,15 @@ const oidc = authenticate("oidc", "Unauthorized", true, "page");
 
 function admin(req, res, next) {
   if (utils.isAdmin(req.user)) return next();
+  
+  if (req.isHTML) {
+    if (req.headers["hx-request"]) {
+      res.setHeader("HX-Redirect", "/");
+      return res.send("");
+    }
+    return res.redirect("/");
+  }
+
   throw new CustomError("Unauthorized", 401);
 }
 
@@ -137,7 +146,8 @@ async function createAdminUser(req, res) {
 
   if (req.isHTML) {
     utils.setToken(res, token);
-    res.render("partials/auth/welcome");
+    res.setHeader("HX-Redirect", "/");
+    res.send("");
     return;
   }
   
@@ -147,9 +157,9 @@ async function createAdminUser(req, res) {
 function login(req, res) {
   const token = utils.signToken(req.user);
 
-  if (req.isHTML) {
+  if (req.isHTML || req.headers['content-type'] === 'application/x-www-form-urlencoded') {
     utils.setToken(res, token);
-    res.render("partials/auth/welcome");
+    res.send("<script>window.location.href='/';</script>");
     return;
   }
   
