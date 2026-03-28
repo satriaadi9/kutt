@@ -5,6 +5,9 @@ const env = require("../env");
 function isHTML(req, res, next) {
   const accepts = req.accepts(["json", "html"]);
   req.isHTML = accepts === "html";
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
   next();
 }
 
