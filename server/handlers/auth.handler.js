@@ -38,11 +38,12 @@ function authenticate(type, error, isStrict, redirect) {
         (user && user.banned))
       ) {
         if (redirect === "page") {
-          res.redirect("/logout");
+          res.clearCookie("token");
+          res.redirect("/login");
           return;
         }
         if (redirect === "header") {
-          res.setHeader("HX-Redirect", "/logout");
+          res.setHeader("HX-Redirect", "/login?cache=bust");
           res.send("NOT_AUTHENTICATED");
           return;
         }
