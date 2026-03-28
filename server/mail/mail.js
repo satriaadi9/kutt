@@ -32,16 +32,20 @@ let resetEmailTemplate,
 
 // only read email templates if email is enabled
 if (env.MAIL_ENABLED) {
+  const protocol = env.DEFAULT_DOMAIN.includes('localhost') ? 'http://' : 'https://';
   resetEmailTemplate = fs
     .readFileSync(resetEmailTemplatePath, { encoding: "utf-8" })
+    .replace(/https:\/\//gm, protocol)
     .replace(/{{domain}}/gm, env.DEFAULT_DOMAIN)
     .replace(/{{site_name}}/gm, env.SITE_NAME);
   verifyEmailTemplate = fs
     .readFileSync(verifyEmailTemplatePath, { encoding: "utf-8" })
+    .replace(/https:\/\//gm, protocol)
     .replace(/{{domain}}/gm, env.DEFAULT_DOMAIN)
     .replace(/{{site_name}}/gm, env.SITE_NAME);
   changeEmailTemplate = fs
     .readFileSync(changeEmailTemplatePath, { encoding: "utf-8" })
+    .replace(/https:\/\//gm, protocol)
     .replace(/{{domain}}/gm, env.DEFAULT_DOMAIN)
     .replace(/{{site_name}}/gm, env.SITE_NAME);
 }

@@ -37,6 +37,7 @@
     "express-rate-limit": "7.5.0",
     "express-validator": "6.14.2",
     "geoip-lite": "1.4.10",
+    "google-auth-library": "^10.6.2",
     "hbs": "4.2.0",
     "helmet": "7.1.0",
     "ioredis": "5.4.2",

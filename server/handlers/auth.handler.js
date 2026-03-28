@@ -11,6 +11,9 @@ const redis = require("../redis");
 const mail = require("../mail");
 const env = require("../env");
 
+const { OAuth2Client } = require("google-auth-library");
+const googleClient = new OAuth2Client(env.GOOGLE_CLIENT_ID);
+
 const CustomError = utils.CustomError;
 
 function authenticate(type, error, isStrict, redirect) {
@@ -150,6 +153,67 @@ function login(req, res) {
   }
   
   return res.status(200).send({ token });
+}
+
+async function googleSSO(req, res) {
+  if (!env.GOOGLE_CLIENT_ID) {
+    throw new CustomError("Google SSO is not enabled.", 400);
+  }
+
+  const { credential } = req.body;
+  if (!credential) {
+    throw new CustomError("No Google ID token provided.", 400);
+  }
+
+  try {
+    const ticket = await googleClient.verifyIdToken({
+      idToken: credential,
+      audience: env.GOOGLE_CLIENT_ID,
+    });
+    
+    const payload = ticket.getPayload();
+    const email = payload.email;
+
+    if (!email) {
+      throw new CustomError("Google account does not have an email address.", 400);
+    }
+
+    let user = await query.user.find({ email });
+
+    if (!user) {
+      const salt = await bcrypt.genSalt(12);
+      const password = await bcrypt.hash(utils.generateRandomPassword ? utils.generateRandomPassword() : randomUUID(), salt);
+      await query.user.add({
+        email,
+        password,
+      });
+
+      // Automatically verify since Google verified the email
+      user = await query.user.update({ email }, {
+        verified: true,
+        verification_token: null,
+        verification_expires: null,
+      });
+    } else if (!user.verified) {
+      user = await query.user.update({ email }, {
+        verified: true,
+        verification_token: null,
+        verification_expires: null,
+      });
+    }
+
+    const token = utils.signToken(user);
+    utils.setToken(res, token);
+    
+    if (req.isHTML || req.headers['content-type'] === 'application/x-www-form-urlencoded') {
+      return res.redirect('/');
+    }
+
+    return res.status(200).send({ token });
+  } catch (err) {
+    console.error("Google SSO Error:", err);
+    throw new CustomError("Google authentication failed.", 401);
+  }
 }
 
 async function verify(req, res, next) {
@@ -389,6 +453,7 @@ module.exports = {
   featureAccess,
   featureAccessPage,
   generateApiKey,
+  googleSSO,
   jwt,
   jwtLoose,
   jwtLoosePage,

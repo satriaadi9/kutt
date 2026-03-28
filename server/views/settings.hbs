@@ -4,16 +4,20 @@
     Welcome, <span>{{user.email}}</span>.
   </h1>
   <hr />
-  {{> settings/domain/index}}
-  <hr />
-  {{> settings/apikey}}
-  <hr />
-  {{> settings/change_password}}
-  <hr />
-  {{#if mail_enabled}}
-    {{> settings/change_email}}
+  {{#if user.admin}}
+    {{> settings/domain/index}}
+    <hr />
+    {{> settings/apikey}}
     <hr />
   {{/if}}
-  {{> settings/delete_account}}
+  {{> settings/change_password}}
+  <hr />
+  {{#if user.admin}}
+    {{#if mail_enabled}}
+      {{> settings/change_email}}
+      <hr />
+    {{/if}}
+    {{> settings/delete_account}}
+  {{/if}}
 </section>
 {{> footer}}

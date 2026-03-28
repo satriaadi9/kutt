@@ -28,7 +28,7 @@ if (process.argv.includes("--production")) {
 
 const spec = {
   PORT: num({ default: 3000 }),
-  SITE_NAME: str({ example: "Kutt", default: "Kutt" }),
+  SITE_NAME: str({ example: "SIFT Shortener", default: "SIFT Shortener" }),
   DEFAULT_DOMAIN: str({ example: "kutt.it", default: "localhost:3000" }),
   LINK_LENGTH: num({ default: 6 }),
   LINK_CUSTOM_ALPHABET: str({ default: "abcdefghkmnpqrstuvwxyzABCDEFGHKLMNPQRSTUVWXYZ23456789" }),
@@ -68,6 +68,7 @@ const spec = {
   OIDC_CLIENT_SECRET: str({ default: "" }),
   OIDC_SCOPE: str({ default: "openid profile email" }),
   OIDC_EMAIL_CLAIM: str({ default: "email" }),
+  GOOGLE_CLIENT_ID: str({ default: "" }),
   ENABLE_RATE_LIMIT: bool({ default: false }),
   REPORT_EMAIL: str({ default: "" }),
   CONTACT_EMAIL: str({ default: "" }),

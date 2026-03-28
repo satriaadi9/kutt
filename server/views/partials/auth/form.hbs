@@ -62,6 +62,43 @@
       </a>
     </div>
   {{/if}}
+  {{#if google_client_id}}
+    <div class="buttons-wrapper" style="margin-top: 10px;">
+      <div id="g_id_onload"
+           data-client_id="{{google_client_id}}"
+           data-callback="handleGoogleSSO"
+           data-auto_prompt="false">
+      </div>
+      <div class="g_id_signin"
+           data-type="standard"
+           data-size="large"
+           data-theme="outline"
+           data-text="sign_in_with"
+           data-shape="rectangular"
+           data-logo_alignment="left"
+           style="width: 100%;">
+      </div>
+      <script>
+        function handleGoogleSSO(response) {
+            fetch('/api/auth/google', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                credentials: 'same-origin',
+                body: JSON.stringify({ credential: response.credential })
+            }).then(res => res.json()).then(data => {
+                if (data.token) {
+                    window.location.href = '/';
+                } else {
+                    alert(data.error || 'Google Login Failed');
+                }
+            }).catch(err => {
+                console.error(err);
+                alert('Google Authentication Error');
+            });
+        }
+      </script>
+    </div>
+  {{/if}}
   {{#unless disallow_login_form}}
     {{#if mail_enabled}}
       <a class="forgot-password" href="/reset-password" title="Reset password">Forgot your password?</a>

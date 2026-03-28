@@ -28,8 +28,10 @@ function config(req, res, next) {
   res.locals.server_cname_address = env.SERVER_CNAME_ADDRESS;
   res.locals.disallow_registration = env.DISALLOW_REGISTRATION;
   res.locals.disallow_login_form = env.DISALLOW_LOGIN_FORM;
-  res.locals.login_disabled = env.DISALLOW_LOGIN_FORM && !env.OIDC_ENABLED;
+  res.locals.login_disabled = env.DISALLOW_LOGIN_FORM && !env.OIDC_ENABLED && !env.GOOGLE_CLIENT_ID;
   res.locals.oidc_enabled = env.OIDC_ENABLED;
+  res.locals.google_client_id = env.GOOGLE_CLIENT_ID;
+  res.locals.site_url = utils.getSiteURL();
   res.locals.mail_enabled = env.MAIL_ENABLED;
   res.locals.report_email = env.REPORT_EMAIL;
   res.locals.custom_styles = utils.getCustomCSSFileNames();

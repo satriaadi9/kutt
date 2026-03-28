@@ -21,7 +21,7 @@
       </h1>
     {{/if}}
     {{#unless link}}
-        <h1>Cut your links <span>shorter</span>.</h1>
+        <h1>Shorten your <span>URL</span>.</h1>
     {{/unless}}
   </div>
   <form 
@@ -31,8 +31,9 @@
     hx-target="closest main" 
     hx-swap="outerHTML" 
     autocomplete="off"
+    style="display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 700px; margin: 0 auto; gap: 16px;"
   >
-    <div class="target-wrapper {{#if errors.target}}error{{/if}}">
+    <div class="target-wrapper {{#if errors.target}}error{{/if}}" style="width: 100%; margin: 0; display: block; position: relative;">
       <input
         id="target"
         name="target"
@@ -42,19 +43,33 @@
         autofocus="true"
         data-lpignore="true"
         hx-preserve="true"
+        style="width: 100%; border-radius: 14px; border: 1px solid #E5E5EA; padding: 18px 24px !important; font-size: 17px; background: white; box-shadow: 0 4px 14px rgba(0,0,0,0.05); outline: none; transition: box-shadow 0.2s; -webkit-appearance: none; box-sizing: border-box;"
       />
-      <button class="submit">
-        {{> icons/send}}
-        {{> icons/spinner}}
-      </button>
-      {{#if errors.target}}<p class="error">{{errors.target}}</p>{{/if}}
+      {{#if errors.target}}<p class="error" style="color: #FF3B30; margin-top: 8px; font-size: 14px; text-align: left;">{{errors.target}}</p>{{/if}}
       {{#unless errors}}
         {{#if error}}
-          <p class="error">{{error}}</p>
+          <p class="error" style="color: #FF3B30; margin-top: 8px; font-size: 14px; text-align: left;">{{error}}</p>
         {{/if}}
       {{/unless}}
     </div>
-    <label id="advanced" class="checkbox">
+    
+    <div class="custom-address-wrapper" style="width: 100%;">
+      <label id="customurl-label" class="{{#if errors.customurl}}error{{/if}}" style="display: flex; flex-direction: row !important; align-items: center; justify-content: flex-start; background: white; border-radius: 14px; border: 1px solid #E5E5EA; padding: 0 24px; box-shadow: 0 4px 14px rgba(0,0,0,0.05); height: 60px; width: 100%; cursor: text; transition: box-shadow 0.2s; box-sizing: border-box;">
+        <span id="customurl-label-value" hx-preserve="true" style="color: #8E8E93; margin-right: 8px; font-weight: 500; font-size: 17px; white-space: nowrap; flex-shrink: 0;">{{default_domain}}/</span>
+        <input
+          type="text" 
+          id="customurl" 
+          name="customurl" 
+          placeholder="Custom address (optional)" 
+          hx-preserve="true"
+          autocomplete="off" 
+          style="border: none; background: transparent; font-size: 17px; flex: 1; outline: none; padding: 0; min-width: 0; height: 100%; margin: 0; margin-top: 0 !important; color: #1D1D1F;"
+        />
+      </label>
+      {{#if errors.customurl}}<p class="error" style="color: #FF3B30; margin-top: 8px; font-size: 14px; text-align: left;">{{errors.customurl}}</p>{{/if}}
+    </div>
+
+    <label id="advanced" class="checkbox" style="margin-top: 8px; align-self: flex-start; cursor: pointer;">
       <input 
         name="show_advanced" 
         type="checkbox" 
@@ -63,7 +78,7 @@
       />
       Show advanced options
     </label>
-    <section id="advanced-options" class="{{#unless show_advanced}}hidden{{/unless}}">
+    <section id="advanced-options" class="{{#unless show_advanced}}hidden{{/unless}}" style="width: 100%;">
       <div class="advanced-input-wrapper">
         <label class="{{#if errors.domain}}error{{/if}}">
           Domain:
@@ -76,6 +91,7 @@
               if (!elm) return;
               elm.textContent = event.target.value + '/';
             "
+            style="border-radius: 12px; border: 1px solid #E5E5EA; padding: 12px; font-size: 15px; outline: none; transition: border-color 0.2s;"
           >
             <option value={{default_domain}}>{{default_domain}}</option>
             {{#each domains}}
@@ -83,18 +99,6 @@
             {{/each}}
           </select>
           {{#if errors.domain}}<p class="error">{{errors.domain}}</p>{{/if}}
-        </label>
-        <label id="customurl-label" class="{{#if errors.customurl}}error{{/if}}">
-          <span id="customurl-label-value" hx-preserve="true">{{default_domain}}/</span>
-          <input
-            type="text" 
-            id="customurl" 
-            name="customurl" 
-            placeholder="Custom address..." 
-            hx-preserve="true"
-            autocomplete="off" 
-          />
-          {{#if errors.customurl}}<p class="error">{{errors.customurl}}</p>{{/if}}
         </label>
         <label class="{{#if errors.password}}error{{/if}}">
           Password:
@@ -105,6 +109,7 @@
             placeholder="Password..." 
             hx-preserve="true" 
             autocomplete="new-password"
+            style="border-radius: 12px; border: 1px solid #E5E5EA; padding: 12px; font-size: 15px; outline: none; transition: border-color 0.2s;"
           />
           {{#if errors.password}}<p class="error">{{errors.password}}</p>{{/if}}
         </label>
@@ -118,6 +123,7 @@
             name="expire_in" 
             placeholder="2 minutes/hours/days" 
             hx-preserve="true" 
+            style="border-radius: 12px; border: 1px solid #E5E5EA; padding: 12px; font-size: 15px; outline: none; transition: border-color 0.2s;"
           />
           {{#if errors.expire_in}}<p class="error">{{errors.expire_in}}</p>{{/if}}
         </label>
@@ -129,10 +135,22 @@
             name="description" 
             placeholder="Description..." 
             hx-preserve="true" 
+            style="border-radius: 12px; border: 1px solid #E5E5EA; padding: 12px; font-size: 15px; outline: none; transition: border-color 0.2s;"
           />
           {{#if errors.description}}<p class="error">{{errors.description}}</p>{{/if}}
         </label>
       </div>
     </section>
+
+    <button class="submit" style="width: 100%; border-radius: 14px; background: #007AFF; color: white; padding: 18px; font-size: 17px; font-weight: 600; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(0,122,255,0.3); transition: transform 0.1s, opacity 0.2s; position: static;">
+      Shorten URL
+      <span style="display: flex; align-items: center; justify-content: center;">
+        <style>
+          .submit > span > svg { display: none; width: 20px; height: 20px; }
+          form.htmx-request .submit > span > svg.spinner { display: block; animation: spin 2s linear infinite; }
+        </style>
+        {{> icons/spinner}}
+      </span>
+    </button>
   </form>
 </main>

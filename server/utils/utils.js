@@ -51,12 +51,12 @@ function setToken(res, token) {
   res.cookie("token", token, {
     maxAge: 1000 * 60 * 60 * 24 * 7, // expire after seven days
     httpOnly: true,
-    secure: env.isProd
+    secure: env.isProd && !env.DEFAULT_DOMAIN.includes('localhost')
   });
 }
 
 function deleteCurrentToken(res) {
-  res.clearCookie("token", { httpOnly: true, secure: env.isProd });
+  res.clearCookie("token", { httpOnly: true, secure: env.isProd && !env.DEFAULT_DOMAIN.includes('localhost') });
 }
 
 function generateRandomPassword() {
@@ -80,12 +80,12 @@ function addProtocol(url) {
 }
 
 function getSiteURL() {
-  const protocol = !env.isDev ? "https://" : "http://";
+  const protocol = (!env.isDev && !env.DEFAULT_DOMAIN.includes('localhost')) ? "https://" : "http://";
   return `${protocol}${env.DEFAULT_DOMAIN}`;
 }
 
 function getShortURL(address, domain) {
-  const protocol = (env.CUSTOM_DOMAIN_USE_HTTPS || !domain) && !env.isDev ? "https://" : "http://";
+  const protocol = ((env.CUSTOM_DOMAIN_USE_HTTPS || !domain) && !env.isDev && !env.DEFAULT_DOMAIN.includes('localhost')) ? "https://" : "http://";
   const link = `${domain || env.DEFAULT_DOMAIN}/${address}`;
   const url = `${protocol}${link}`;
   return { address, link, url };

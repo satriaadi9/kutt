@@ -43,6 +43,11 @@ router.post(
 );
 
 router.post(
+  "/google",
+  asyncHandler(auth.googleSSO)
+);
+
+router.post(
   "/change-password",
   locals.viewTemplate("partials/settings/change_password"),
   asyncHandler(auth.jwt),

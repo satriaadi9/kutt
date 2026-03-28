@@ -24,6 +24,9 @@
   <meta name="description" content="{{site_name}} is a free and open source URL shortener with custom domains and stats." />
   <title>{{site_name}} | {{title}}</title>
   <link rel="stylesheet" href="/css/styles.css">
+  {{#if google_client_id}}
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  {{/if}}
   {{#each custom_styles}}
     <link rel="stylesheet" href="/css/{{this}}">
   {{/each}}
